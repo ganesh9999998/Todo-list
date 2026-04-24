@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Smooth To-Do</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transition: background 0.5s ease;
+}
+
+/* 🌙 Dark mode */
+body.dark {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+}
+
+/* Container */
+.container {
+    width: 360px;
+    padding: 25px;
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    color: white;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards;
+}
+
+body.dark .container {
+    background: rgba(0,0,0,0.25);
+}
+
+/* Heading */
+h1 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Input */
+.input-section {
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    transition: 0.3s;
+}
+
+input:focus {
+    transform: scale(1.03);
+}
+
+/* Button */
+button {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #00c6ff;
+    color: white;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* Toggle */
+.toggle-btn {
+    width: 100%;
+    margin-bottom: 10px;
+    background: black;
+}
+
+/* List */
+ul {
+    margin-top: 20px;
+}
+
+/* Task */
+li {
+    list-style: none;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    transform: translateY(10px);
+    opacity: 0;
+    animation: itemFade 0.4s ease forwards;
+}
+
+/* Hover */
+li:hover {
+    transform: scale(1.02);
+}
+
+/* Completed */
+.completed {
+    text-decoration: line-through;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+/* Delete */
+.delete {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.delete:hover {
+    transform: scale(1.2);
+    color: red;
+}
+
+/* Animations */
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes itemFade {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Remove animation */
+.fade-out {
+    animation: removeItem 0.3s ease forwards;
+}
+
+@keyframes removeItem {
+    to {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <button class="toggle-btn" onclick="toggleDark()">🌙 Toggle Mode</button>
+
+    <h1>✨ Smooth To-Do</h1>
+
+    <div class="input-section">
+        <input type="text" id="taskInput" placeholder="Enter task...">
+        <button onclick="addTask()">Add</button>
+    </div>
+
+    <ul id="taskList"></ul>
+</div>
+
+<script>
+function addTask() {
+    let input = document.getElementById("taskInput");
+    let task = input.value.trim();
+
+    if (!task) return alert("Enter a task!");
+
+    let li = document.createElement("li");
+    li.innerHTML = `
+        <span class="text">${task}</span>
+        <span class="delete">❌</span>
+    `;
+
+    // complete toggle
+    li.querySelector(".text").onclick = () => {
+        li.classList.toggle("completed");
+    };
+
+    // delete with smooth animation
+    li.querySelector(".delete").onclick = (e) => {
+        e.stopPropagation();
+        li.classList.add("fade-out");
+        setTimeout(() => li.remove(), 300);
+    };
+
+    document.getElementById("taskList").appendChild(li);
+    input.value = "";
+}
+
+// dark mode
+function toggleDark() {
+    document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
